@@ -1,0 +1,7 @@
+python-chess
+transformers<5
+torch
+stable-baselines3[extra]
+gym
+pygame
+sentencepiece
