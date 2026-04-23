@@ -28,7 +28,7 @@ This project implements a chess game where a Reinforcement Learning (RL) agent p
 1. Clone the repository:
 
    ```
-   git clone https://github.com/jrzmnt/chess-rl-vs-llm.git
+   git clone https://github.com/V4IDIK/RL-vs-LLM-in-Chess.git
    cd chess-rl-vs-llm
    ```
 
