@@ -4,7 +4,7 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import torch
 import re
 
-class SimpleLLM:
+class SimpleLLM: 
     def __init__(self):
         self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2-large")
         self.model = GPT2LMHeadModel.from_pretrained("gpt2-large")

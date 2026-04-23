@@ -1,122 +1,69 @@
-# RL vs LLM Chess
+# Chess: RL vs LLM
 
-A visual chess project where a reinforcement learning (RL) agent plays against a language-model-based (LLM) agent in a Pygame interface.
+This project implements a chess game where a Reinforcement Learning (RL) agent plays against a Large Language Model (LLM). The game is visualized using a Pygame-based graphical user interface.
 
-## What this project does
+<p align="center">
+  <img src="rl-vs-llm.gif" alt="Chess game between an RL and LLM models" width="35%">
+</p>
 
-- Runs a full chess game between two AI players:
-  - `RLAgent` (PPO from Stable-Baselines3)
-  - `LLMAgent` (GPT-2 based move generator + legal-move filtering/fallback logic)
-- Shows the match in a custom GUI with:
-  - board rendering
-  - move history
-  - captured piece info
-  - game timer
-  - start screen with side selection and optional random seed
+## Features
 
-## Project structure
-
-- `main.py` - entry point; initializes GUI, loads/trains RL model, and runs the game loop.
-- `chess_environment/chess_env.py` - Gym-compatible chess environment and board encoding.
-- `rl_player/rl_agent.py` - PPO training/inference wrapper for RL moves.
-- `llm_player/llm_agent.py` - GPT-2 move suggestion, parsing, validation, caching, and fallback strategy.
-- `chess_gui.py` - Pygame-based UI and game visualization.
-- `requirements.txt` - Python dependencies.
+- RL agent trained using Proximal Policy Optimization (PPO) from Stable Baselines3
+- LLM agent based on a simplified version of DistilGPT2
+- Interactive chess board with move highlighting
+- Real-time display of game information, including captured pieces and move history
+- Customizable random seed for reproducibility
 
 ## Requirements
 
-- Python 3.9+ recommended
-- `pip`
-- A machine that can run:
-  - Pygame window rendering
-  - Hugging Face `gpt2-large` model inference
+- Python 3.7+
+- PyTorch
+- Stable Baselines3
+- Pygame
+- python-chess
+- transformers (Hugging Face)
 
 ## Installation
 
-1. Clone the repository and enter the folder:
+1. Clone the repository:
 
-```bash
-git clone <your-repo-url>
-cd rl-vs-llm-chess-main
+   ```
+   git clone https://github.com/jrzmnt/chess-rl-vs-llm.git
+   cd chess-rl-vs-llm
+   ```
+
+2. Install the required packages:
+   ```
+   pip install -r requirements.txt
+   ```
+
+## Usage
+
+Run the main script to start the game:
+
+```
+python src\main.py
 ```
 
-2. (Recommended) Create and activate a virtual environment:
+## How It Works
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-```
+1. The RL agent is trained using PPO on the custom chess environment defined in `chess_environment/chess_env.py`.
+2. The LLM agent in `llm_player/llm_agent.py` generates moves based on the current board state using a simplified version of DistilGPT2.
+3. The game alternates between the two agents, with each move being visualized on the chess board using the Pygame GUI implemented in `chess_gui.py`.
+4. The `main.py` script orchestrates the game flow, including initialization, turn management, and game termination conditions.
+5. The game continues until checkmate, stalemate, or the maximum number of moves is reached.
 
-3. Install dependencies:
+## Customization
 
-```bash
-pip install -r requirements.txt
-```
+- Adjust the RL training parameters in `rl_player/rl_agent.py`
+- Modify the LLM prompt or model in `llm_player/llm_agent.py`
+- Customize the GUI appearance in `chess_gui.py`
 
-## Assets required for GUI
+## Acknowledgements
 
-The GUI code expects image assets in these locations:
+- [Stable Baselines3](https://github.com/DLR-RM/stable-baselines3) for the RL implementation
+- [Hugging Face Transformers](https://github.com/huggingface/transformers) for the LLM implementation
+- [python-chess](https://github.com/niklasf/python-chess) for the chess logic
+- [Pygame](https://www.pygame.org/) for the graphical interface
 
-- `icon.png`
-- `chess_pieces/wp.png`, `chess_pieces/wn.png`, `chess_pieces/wb.png`, `chess_pieces/wr.png`, `chess_pieces/wq.png`, `chess_pieces/wk.png`
-- `chess_pieces/bp.png`, `chess_pieces/bn.png`, `chess_pieces/bb.png`, `chess_pieces/br.png`, `chess_pieces/bq.png`, `chess_pieces/bk.png`
 
-If these files are missing, startup will fail when loading images.
-
-## Running the project
-
-```bash
-python main.py
-```
-
-At startup:
-
-1. The start screen appears.
-2. Choose who plays White (`RL` or `LLM`).
-3. Optionally enter a numeric seed (for reproducible randomness).
-4. The game begins after RL model load/train.
-
-## RL model behavior
-
-- Default model file: `rl_model.zip`
-- Checkpoint file during training: `rl_model_checkpoint.zip`
-- If `rl_model.zip` exists, it is loaded.
-- Otherwise, the RL agent trains for `50,000` timesteps and saves the model.
-
-You can adjust training behavior in:
-
-- `main.py` (`total_timesteps` / `checkpoint_freq` call site)
-- `rl_player/rl_agent.py` (PPO hyperparameters)
-
-## LLM behavior
-
-- Uses Hugging Face `gpt2-large` via `transformers`.
-- Prompts with current FEN + legal move list.
-- Extracts UCI moves with regex and validates legality.
-- Uses fallback heuristics if generation fails (prefers checks/captures, tries to avoid repetition).
-
-## Notes and caveats
-
-- First run may take time because:
-  - `gpt2-large` may need to be downloaded
-  - RL model may train if no local model exists
-- Gameplay speed includes intentional visualization delays in `main.py`.
-- The Gym API in this code uses the classic return signature (`obs, reward, done, info`).
-
-## Troubleshooting
-
-- **Pygame window does not open**: ensure local desktop session and graphics support are available.
-- **Model download errors**: check internet access and local cache permissions.
-- **Slow performance**:
-  - expect slower LLM turns on CPU
-  - reduce RL training timesteps in `main.py`
-- **Missing file errors for images**: add required assets under `icon.png` and `chess_pieces/`.
-
-## Quick start recap
-
-```bash
-pip install -r requirements.txt
-python main.py
-```
-
-Select White side in the GUI and watch RL vs LLM play.
