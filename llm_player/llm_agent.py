@@ -11,8 +11,8 @@ class SimpleLLM:
         self.tokenizer.pad_token = self.tokenizer.eos_token
 
     def clean_move(self, move_string):
-        match = re.search(r'\b[a-h][1-8][a-h][1-8][qrbn]?\b', move_string.lower())
-        return match.group(0) if match else ""
+        matches = re.findall(r'\b[a-h][1-8][a-h][1-8][qrbn]?\b', move_string.lower())
+        return matches[-1] if matches else ""
 
     def causes_repetition(self, board, move, seen_positions=None):
         temp_board = board.copy()
@@ -59,7 +59,8 @@ class SimpleLLM:
                 temperature=0.7,
                 pad_token_id=self.tokenizer.eos_token_id
             )
-            suggested_move = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+            generated_tokens = outputs[0][input_ids.shape[-1]:]
+            suggested_move = self.tokenizer.decode(generated_tokens, skip_special_tokens=True)
             suggested_move = self.clean_move(suggested_move)
 
             if suggested_move:
